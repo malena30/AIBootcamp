@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-// Definir los tipos para nuestro contexto
+// Define the types for our context
 type Language = 'es' | 'en';
 
 interface LanguageContextType {
@@ -9,7 +9,7 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-// Definir el tipo para las traducciones
+// Define the type for translations
 interface TranslationDictionary {
   [key: string]: string;
 }
@@ -19,10 +19,10 @@ interface Translations {
   en: TranslationDictionary;
 }
 
-// Crear el contexto con un valor predeterminado
+// Create the context with a default value
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Traducciones
+// Translations
 const translations: Translations = {
   es: {
     // Títulos y subtítulos
@@ -314,15 +314,15 @@ const translations: Translations = {
   }
 };
 
-// Proveedor del contexto
+// Provider of the context
 interface LanguageProviderProps {
   children: ReactNode;
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('es'); // Español por defecto
+  const [language, setLanguage] = useState<Language>('es'); // Spanish by default
   
-  // Función para obtener la traducción
+  // Function to get translation
   const t = (key: string): string => {
     return translations[language][key] || key;
   };
@@ -334,7 +334,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   );
 };
 
-// Hook personalizado para usar el contexto
+// Custom hook to use the context
 export const useLanguage = (): LanguageContextType => {
   const context = useContext(LanguageContext);
   if (context === undefined) {

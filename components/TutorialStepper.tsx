@@ -13,7 +13,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 interface TutorialStepperProps {
   visible: boolean;
-  onClose: () => void;
+  onClose: (completed?: boolean) => void;
 }
 
 interface TutorialStep {
@@ -26,50 +26,51 @@ const TutorialStepper: React.FC<TutorialStepperProps> = ({ visible, onClose }) =
   const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(0);
   
-  // Definir los pasos del tutorial
+  // Define tutorial steps
   const tutorialSteps: TutorialStep[] = [
     {
       title: t('tutorialStep1Title'),
       text: t('tutorialStep1Text'),
-      // Imagen representativa del camino de nodos
+      // Representative image of the node path
     },
     {
       title: t('tutorialStep2Title'),
       text: t('tutorialStep2Text'),
-      // Imagen representativa de completar nodos
+      // Representative image of completing nodes
     },
     {
       title: t('tutorialStep3Title'),
       text: t('tutorialStep3Text'),
-      // Imagen representativa del cambio de idioma
+      // Representative image of language switching
     },
     {
       title: t('tutorialStep4Title'),
       text: t('tutorialStep4Text'),
-      // Imagen representativa de la recompensa final
+      // Representative image of the final reward
     }
   ];
   
-  // Función para ir al siguiente paso
+  // Function to go to next step
   const nextStep = () => {
     if (currentStep < tutorialSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Si estamos en el último paso, cerrar el tutorial
-      onClose();
+      // If we're on the last step, close the tutorial and mark as completed
+      onClose(true);
     }
   };
   
-  // Función para ir al paso anterior
+  // Function to go to previous step
   const previousStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
   
-  // Función para omitir el tutorial
+  // Function to skip tutorial
   const skipTutorial = () => {
-    onClose();
+    // Close without marking as completed
+    onClose(false);
   };
   
   return (
@@ -77,13 +78,13 @@ const TutorialStepper: React.FC<TutorialStepperProps> = ({ visible, onClose }) =
       transparent={true}
       visible={visible}
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={() => skipTutorial()}
     >
       <SafeAreaView style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.tutorialTitle}>{t('tutorialTitle')}</Text>
           
-          {/* Indicador de pasos */}
+          {/* Step indicator */}
           <View style={styles.stepsIndicator}>
             {tutorialSteps.map((_, index) => (
               <View 
@@ -96,12 +97,12 @@ const TutorialStepper: React.FC<TutorialStepperProps> = ({ visible, onClose }) =
             ))}
           </View>
           
-          {/* Contenido del paso actual */}
+          {/* Current step content */}
           <View style={styles.stepContent}>
             <Text style={styles.stepTitle}>{tutorialSteps[currentStep].title}</Text>
             <Text style={styles.stepText}>{tutorialSteps[currentStep].text}</Text>
             
-            {/* Si hay una imagen para este paso, mostrarla */}
+            {/* If there's an image for this step, show it */}
             {tutorialSteps[currentStep].image && (
               <Image 
                 source={tutorialSteps[currentStep].image} 
@@ -111,7 +112,7 @@ const TutorialStepper: React.FC<TutorialStepperProps> = ({ visible, onClose }) =
             )}
           </View>
           
-          {/* Botones de navegación */}
+          {/* Navigation buttons */}
           <View style={styles.buttonsContainer}>
             {currentStep > 0 ? (
               <TouchableOpacity style={styles.navButton} onPress={previousStep}>

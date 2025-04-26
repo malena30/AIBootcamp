@@ -35,7 +35,11 @@ const SimpleNodePath: React.FC<SimpleNodePathProps> = ({ nodes, onNodePress }) =
   }, [nodes]);
   
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+    >
       <View style={styles.pathContainer}>
         {/* Nodos en zigzag */}
         {localNodes.map((node, index) => {
@@ -74,16 +78,16 @@ const SimpleNodePath: React.FC<SimpleNodePathProps> = ({ nodes, onNodePress }) =
                 )}
                 {node.locked && (
                   <View style={styles.lock}>
-                    <MaterialIcons name="lock" size={28} color="white" />
+                    <MaterialIcons name="lock" size={40} color="white" />
                   </View>
                 )}
                 {!node.locked && !node.completed && (
                   <View style={styles.nodeIcon}>
                     {(node.id === '2' || node.id === '4') && (
-                      <MaterialIcons name="videocam" size={28} color="white" />
+                      <MaterialIcons name="videocam" size={40} color="white" />
                     )}
                     {(node.id === '3' || node.id === '5') && (
-                      <MaterialIcons name="lightbulb" size={28} color="white" />
+                      <MaterialIcons name="lightbulb" size={40} color="white" />
                     )}
                   </View>
                 )}
@@ -117,11 +121,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   pathContainer: {
-    paddingVertical: 40,
+    paddingVertical: 100,
     paddingHorizontal: 20,
   },
   nodeWrapper: {
-    marginVertical: 25,
+    marginVertical: 50,
     alignItems: 'center',
     width: '100%',
   },
@@ -134,17 +138,17 @@ const styles = StyleSheet.create({
     paddingRight: '15%',
   },
   node: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     backgroundColor: '#3498db',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   completedNode: {
     backgroundColor: '#4CAF50',
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
   },
   checkmarkText: {
     color: 'white',
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: 'bold',
   },
   lock: {

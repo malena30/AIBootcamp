@@ -40,14 +40,14 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
       setLoading(true);
       setVideoCompleted(false);
       
-      // Activar el botón después de 20 segundos (tiempo suficiente para ver parte importante del video)
+      // Activate the button after 20 seconds (enough time to watch an important part of the video)
       timerRef.current = setTimeout(() => {
-        console.log("Activando botón de continuar después de 20 segundos");
+        console.log("Activating continue button after 20 seconds");
         setVideoCompleted(true);
       }, 20000);
     }
     
-    // Limpiar el temporizador cuando se cierra el modal
+    // Clear the timer when the modal is closed
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
@@ -56,17 +56,17 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
     };
   }, [visible]);
   
-  // Reiniciar el estado cuando se abre el modal
-  // Crear la URL del video de YouTube para embeber con parámetros adicionales
+  // Reset the state when the modal is opened
+  // Create the YouTube video embed URL with additional parameters
   const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1&showinfo=0&enablejsapi=1&controls=1&origin=${encodeURIComponent('https://youtube.com')}`;
   
-  // Script simple para notificar cuando se carga el WebView
+  // Simple script to notify when the WebView is loaded
   const injectedJavaScript = `
     window.ReactNativeWebView.postMessage('loaded');
     true;
   `;
 
-  // Manejar los mensajes del WebView
+  // Handle messages from the WebView
   const handleWebViewMessage = (event: any) => {
     const { data } = event.nativeEvent;
     console.log("WebView message:", data);
@@ -76,19 +76,19 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
     }
   };
 
-  // Función para manejar el cierre del modal con el botón Continuar
+  // Function to handle modal close with Continue button
   const handleContinueButtonClick = () => {
-    // Cerrar el modal del video primero
+    // Close the video modal first
     onClose(true);
   };
   
-  // Función para manejar el cierre del modal con el botón X
+  // Function to handle modal close with X button
   const handleCloseButtonClick = () => {
-    // Cerrar sin marcar como completado
+    // Close without marking as completed
     onClose(false);
   };
   
-  // Función para manejar el cierre del modal de completado
+  // Function to handle completion modal close
   const handleCompletionModalClose = () => {
     setShowCompletionModal(false);
     onClose(true);
@@ -118,7 +118,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
             {loading && (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#3498db" />
-                <Text style={styles.loadingText}>Cargando video...</Text>
+                <Text style={styles.loadingText}>Loading video...</Text>
               </View>
             )}
             <WebView
@@ -158,7 +158,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
         </View>
       </SafeAreaView>
       
-      {/* Ya no mostramos el modal de confirmación aquí */}
+      {/* We no longer show the completion modal here */}
     </Modal>
   );
 };

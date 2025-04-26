@@ -5,14 +5,14 @@ import { useLanguage } from '@/context/LanguageContext';
 import LottieView from 'lottie-react-native';
 import CompletionModal from './CompletionModal';
 
-// Definir la interfaz para las preguntas
+// Define the interface for quiz questions
 interface QuizQuestion {
   question: string;
   options: string[];
   correctAnswer: number;
 }
 
-// Definir props para el componente
+// Define props for the component
 interface QuizModalProps {
   visible: boolean;
   onClose: (success: boolean) => void;
@@ -36,7 +36,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
   const [tooManyErrors, setTooManyErrors] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   
-  // Reiniciar el estado cuando se abre el modal
+  // Reset state when the modal is opened
   useEffect(() => {
     if (visible) {
       setCurrentQuestionIndex(0);
@@ -49,7 +49,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
     }
   }, [visible]);
   
-  // Función para generar las preguntas del quiz básico
+  // Function to generate basic quiz questions
   const generateBasicQuestions = (): QuizQuestion[] => {
     return [
       {
@@ -60,7 +60,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
           t('quiz_q1_option_3'),
           t('quiz_q1_option_4')
         ],
-        correctAnswer: 2 // Índice de la respuesta correcta (0-based)
+        correctAnswer: 2 // Index of the correct answer (0-based)
       },
       {
         question: t('quiz_question_2'),
@@ -115,7 +115,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
     ];
   };
   
-  // Función para generar las preguntas del quiz avanzado
+  // Function to generate advanced quiz questions
   const generateAdvancedQuestions = (): QuizQuestion[] => {
     return [
       {
@@ -126,7 +126,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
           t('advanced_q1_option_3'),
           t('advanced_q1_option_4')
         ],
-        correctAnswer: 3 // Índice de la respuesta correcta (0-based)
+        correctAnswer: 3 // Index of the correct answer (0-based)
       },
       {
         question: t('advanced_quiz_question_2'),
@@ -181,20 +181,20 @@ const QuizModal: React.FC<QuizModalProps> = ({
     ];
   };
   
-  // Seleccionar el conjunto de preguntas según el tipo de quiz
+  // Select the set of questions based on the quiz type
   const questions = quizType === 'basic' ? generateBasicQuestions() : generateAdvancedQuestions();
   
-  // Obtener la pregunta actual
+  // Get the current question
   const currentQuestion = questions[currentQuestionIndex];
   
-  // Manejar la selección de una opción
+  // Handle option selection
   const handleOptionSelect = (index: number) => {
     if (!showResult) {
       setSelectedOption(index);
     }
   };
   
-  // Verificar la respuesta
+  // Check the answer
   const checkAnswer = () => {
     if (selectedOption === null) return;
     
@@ -203,18 +203,18 @@ const QuizModal: React.FC<QuizModalProps> = ({
     setShowResult(true);
     
     if (!isAnswerCorrect) {
-      // Incrementar el contador de intentos incorrectos
+      // Increment incorrect attempts counter
       const newIncorrectAttempts = incorrectAttempts + 1;
       setIncorrectAttempts(newIncorrectAttempts);
       
-      // Si hay demasiados intentos incorrectos (3), bloquear el quiz
+      // If too many incorrect attempts (3), block the quiz
       if (newIncorrectAttempts >= 3) {
         setTooManyErrors(true);
       }
     }
   };
   
-  // Pasar a la siguiente pregunta
+  // Go to the next question
   const goToNextQuestion = () => {
     setSelectedOption(null);
     setShowResult(false);
@@ -222,30 +222,30 @@ const QuizModal: React.FC<QuizModalProps> = ({
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      // Quiz completado - cerrar el modal y notificar éxito
+      // Quiz completed - close the modal and notify success
       onClose(true);
     }
   };
   
-  // Manejar el cierre del modal
+  // Handle modal close
   const handleClose = () => {
     if (tooManyErrors) {
-      // Si hubo demasiados errores, reiniciar el nodo anterior
+      // If there were too many errors, reset previous node
       onResetPreviousNode();
       onClose(false);
     } else {
-      // Cierre normal sin completar
+      // Normal close without completion
       onClose(false);
     }
   };
   
-  // Manejar el cierre del modal de completado
+  // Handle completion modal close
   const handleCompletionModalClose = () => {
     setShowCompletionModal(false);
     onClose(true);
   };
   
-  // Obtener el título del quiz según el tipo
+  // Get the quiz title based on the type
   const quizTitle = quizType === 'basic' ? t('quiz_title') : t('advanced_quiz_title');
 
   return (
@@ -355,7 +355,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
           ) : null}
         </View>
       </View>
-      {/* Ya no mostramos el modal de confirmación aquí */}
+      {/* We no longer show the completion modal here */}
     </Modal>
   );
 };
