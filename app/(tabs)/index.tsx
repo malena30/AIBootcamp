@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Alert, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, Alert, SafeAreaView, ImageBackground } from 'react-native';
 import SimpleNodePath from '@/components/SimpleNodePath';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import TrophyAnimation from '@/components/TrophyAnimation';
@@ -269,19 +269,22 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>{t('learningPath')}</Text>
-          <Text style={styles.subtitle}>{t('completeNodes')}</Text>
+          <Text style={styles.title}>AiBootcamp</Text>
         </View>
         <View style={styles.languageSwitchContainer}>
           <LanguageSwitch style={styles.languageSwitch} />
         </View>
         
-        <View style={styles.content}>
+        <ImageBackground 
+          source={require('../../assets/images/fonditojpg.jpg')} 
+          style={styles.content}
+          resizeMode="cover"
+        >
           <SimpleNodePath 
             nodes={nodes}
             onNodePress={handleNodePress}
           />
-        </View>
+        </ImageBackground>
       
       <TrophyAnimation 
         visible={showTrophy} 
@@ -327,10 +330,10 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#3498db', // Color azul sólido
+    backgroundColor: '#4a7cb5', // Cambiado para que coincida con el header
   },
   header: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#4a7cb5', // Azul claro
     padding: 20,
     paddingTop: 40,
     alignItems: 'center',
@@ -340,9 +343,10 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     position: 'relative',
+    backgroundColor: 'transparent', // Ensure no background color here
   },
   title: {
-    fontSize: 24,
+    fontSize: 40,
     fontWeight: 'bold',
     color: 'white',
   },

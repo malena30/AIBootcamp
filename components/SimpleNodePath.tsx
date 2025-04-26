@@ -114,7 +114,7 @@ const SimpleNodePath: React.FC<SimpleNodePathProps> = ({ nodes, onNodePress }) =
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'transparent',
   },
   pathContainer: {
     paddingVertical: 40,
