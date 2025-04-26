@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3498db', // Color celeste
+    backgroundColor: '#4a7cb5', // Changed to match the app's blue theme color
     // Asegurar que ocupe toda la pantalla incluyendo la barra de estado
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },

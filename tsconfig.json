@@ -3,7 +3,9 @@
     "strict": true,
     "jsx": "react-native",
     "target": "esnext",
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -27,5 +29,6 @@
     "node_modules",
     "babel.config.js",
     "metro.config.js"
-  ]
+  ],
+  "extends": "expo/tsconfig.base"
 }
