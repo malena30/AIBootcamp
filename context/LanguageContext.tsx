@@ -85,6 +85,10 @@ const translations: Translations = {
     'try_again': 'Intentar de nuevo',
     'quiz_completed_title': '¡Quiz Completado!',
     'quiz_completed_message': '¡Felicidades! Has completado el quiz correctamente. Ahora puedes avanzar al siguiente nivel.',
+    'quizCompleted': '¡Quiz Completado!',
+    'videoCompleted': '¡Video Completado!',
+    'completedQuizMessage': 'Has completado el quiz correctamente. Ahora puedes avanzar al siguiente nivel',
+    'completedVideoMessage': 'Has completado el video. Ahora puedes avanzar al siguiente nivel',
     'quiz_incorrect_title': 'Respuesta Incorrecta',
     'quiz_incorrect_message': 'Tu respuesta es incorrecta. Por favor, intenta de nuevo.',
     'quiz_too_many_errors_title': 'Demasiados Intentos Fallidos',
@@ -188,6 +192,21 @@ const translations: Translations = {
     'please_watch_video': 'Please watch the full video',
     'video_completed_message': 'Video completed! Click Continue to proceed',
     
+    // Quiz related
+    'quiz_question_counter': 'Question {current} of {total}',
+    'check_answer': 'Check Answer',
+    'try_again': 'Try Again',
+    'quiz_completed_title': 'Quiz Completed!',
+    'quiz_completed_message': 'Congratulations! You have successfully completed the quiz. You can now proceed to the next level.',
+    'quizCompleted': 'Quiz Completed!',
+    'videoCompleted': 'Video Completed!',
+    'completedQuizMessage': 'You have successfully completed the quiz. You can now proceed to the next level',
+    'completedVideoMessage': 'You have completed the video. You can now proceed to the next level',
+    'quiz_incorrect_title': 'Incorrect Answer',
+    'quiz_incorrect_message': 'Your answer is incorrect. Please try again.',
+    'quiz_too_many_errors_title': 'Too Many Failed Attempts',
+    'quiz_too_many_errors_message': 'You have had too many failed attempts. You need to watch the video again to reinforce your knowledge.',
+    
     // Settings
     'language': 'Language',
     'spanish': 'Spanish',
@@ -220,17 +239,6 @@ const translations: Translations = {
     // Quiz
     'quiz_title': 'Quiz: Building an LLM like ChatGPT',
     'advanced_quiz_title': 'Advanced Quiz: Mastering LLMs',
-    'quiz_question_counter': 'Question {current} of {total}',
-    'check_answer': 'Check Answer',
-    'try_again': 'Try Again',
-    'quiz_completed_title': 'Quiz Completed!',
-    'quiz_completed_message': 'Congratulations! You have successfully completed the quiz. You can now advance to the next level.',
-    'quiz_incorrect_title': 'Incorrect Answer',
-    'quiz_incorrect_message': 'Your answer is incorrect. Please try again.',
-    'quiz_too_many_errors_title': 'Too Many Failed Attempts',
-    'quiz_too_many_errors_message': 'You have had too many failed attempts. You need to go back and watch the video again to reinforce your knowledge.',
-    
-    // Basic Quiz Questions
     'quiz_question_1': 'What is the main component of a large language model (LLM) like GPT?',
     'quiz_q1_option_1': 'A Convolutional Neural Network (CNN)',
     'quiz_q1_option_2': 'A Recurrent Neural Network (RNN)',

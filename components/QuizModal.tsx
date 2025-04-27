@@ -3,6 +3,7 @@ import { Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'rea
 import { MaterialIcons } from '@expo/vector-icons';
 import { useLanguage } from '@/context/LanguageContext';
 import LottieView from 'lottie-react-native';
+import CompletionModal from './CompletionModal';
 
 // Definir la interfaz para las preguntas
 interface QuizQuestion {
@@ -33,6 +34,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
   const [incorrectAttempts, setIncorrectAttempts] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [tooManyErrors, setTooManyErrors] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
   
   // Reiniciar el estado cuando se abre el modal
   useEffect(() => {
@@ -220,21 +222,27 @@ const QuizModal: React.FC<QuizModalProps> = ({
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      // Quiz completado
-      setQuizCompleted(true);
+      // Quiz completado - cerrar el modal y notificar éxito
+      onClose(true);
     }
   };
   
   // Manejar el cierre del modal
   const handleClose = () => {
-    if (quizCompleted) {
-      onClose(true); // Quiz completado con éxito
-    } else if (tooManyErrors) {
-      onClose(false); // Quiz no completado
-      onResetPreviousNode(); // Reiniciar el nodo anterior
+    if (tooManyErrors) {
+      // Si hubo demasiados errores, reiniciar el nodo anterior
+      onResetPreviousNode();
+      onClose(false);
     } else {
-      onClose(false); // Quiz no completado
+      // Cierre normal sin completar
+      onClose(false);
     }
+  };
+  
+  // Manejar el cierre del modal de completado
+  const handleCompletionModalClose = () => {
+    setShowCompletionModal(false);
+    onClose(true);
   };
   
   // Obtener el título del quiz según el tipo
@@ -330,36 +338,24 @@ const QuizModal: React.FC<QuizModalProps> = ({
                 </TouchableOpacity>
               )}
             </>
-          ) : quizCompleted ? (
-            <View style={styles.completedContainer}>
-              <Text style={styles.completedTitle}>{t('quiz_completed_title')}</Text>
-              <Text style={styles.completedText}>{t('quiz_completed_message')}</Text>
+          ) : tooManyErrors ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorTitle}>{t('quiz_too_many_errors_title')}</Text>
+              <Text style={styles.errorText}>{t('quiz_too_many_errors_message')}</Text>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={() => onClose(true)}
+                onPress={() => {
+                  onResetPreviousNode();
+                  onClose(false);
+                }}
               >
                 <Text style={styles.closeButtonText}>{t('continue')}</Text>
               </TouchableOpacity>
             </View>
-          ) : (
-            tooManyErrors && (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorTitle}>{t('quiz_too_many_errors_title')}</Text>
-                <Text style={styles.errorText}>{t('quiz_too_many_errors_message')}</Text>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => {
-                    onResetPreviousNode();
-                    onClose(false);
-                  }}
-                >
-                  <Text style={styles.closeButtonText}>{t('continue')}</Text>
-                </TouchableOpacity>
-              </View>
-            )
-          )}
+          ) : null}
         </View>
       </View>
+      {/* Ya no mostramos el modal de confirmación aquí */}
     </Modal>
   );
 };
@@ -378,9 +374,14 @@ const styles = StyleSheet.create({
     top: 15,
     right: 15,
     zIndex: 10,
-    padding: 8,
+    padding: 10,
     backgroundColor: '#f0f0f0',
-    borderRadius: 20,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
   },
   modalContent: {
     width: width * 0.92,
@@ -420,9 +421,14 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 8,
     backgroundColor: '#f0f0f0',
-    borderRadius: 8,
+    borderRadius: 15,
     borderWidth: 1,
     borderColor: '#ddd',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   selectedOption: {
     backgroundColor: '#e3f2fd',
@@ -451,8 +457,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#3498db',
     paddingVertical: 12,
     paddingHorizontal: 30,
-    borderRadius: 25,
+    borderRadius: 30,
     marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   disabledButton: {
     backgroundColor: '#bdc3c7',
@@ -493,8 +504,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#4caf50',
     paddingVertical: 12,
     paddingHorizontal: 30,
-    borderRadius: 25,
+    borderRadius: 30,
     marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   nextButtonText: {
     color: 'white',
@@ -505,8 +521,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f44336',
     paddingVertical: 12,
     paddingHorizontal: 30,
-    borderRadius: 25,
+    borderRadius: 30,
     marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   tryAgainButtonText: {
     color: 'white',
@@ -537,8 +558,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#3498db',
     paddingVertical: 12,
     paddingHorizontal: 30,
-    borderRadius: 25,
+    borderRadius: 30,
     marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   closeButtonText: {
     color: 'white',

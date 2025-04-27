@@ -6,6 +6,7 @@ import TrophyAnimation from '@/components/TrophyAnimation';
 import TutorialStepper from '@/components/TutorialStepper';
 import YouTubePlayer from '@/components/YouTubePlayer';
 import QuizModal from '@/components/QuizModal';
+import CompletionModal from '@/components/CompletionModal';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function HomeScreen() {
@@ -16,6 +17,13 @@ export default function HomeScreen() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [showAdvancedVideo, setShowAdvancedVideo] = useState(false);
   const [showAdvancedQuiz, setShowAdvancedQuiz] = useState(false);
+  
+  // Estados para los modales de confirmación
+  const [showVideoCompletionModal, setShowVideoCompletionModal] = useState(false);
+  const [showQuizCompletionModal, setShowQuizCompletionModal] = useState(false);
+  const [showAdvancedVideoCompletionModal, setShowAdvancedVideoCompletionModal] = useState(false);
+  const [showAdvancedQuizCompletionModal, setShowAdvancedQuizCompletionModal] = useState(false);
+  const [completedContentTitle, setCompletedContentTitle] = useState('');
   
   // IDs de los videos de YouTube
   const basicConceptsVideoId = 'kCc8FmEb1nY'; // Video de "How to Learn to Code"
@@ -122,7 +130,7 @@ export default function HomeScreen() {
     setShowVideo(false);
     
     if (videoCompleted) {
-      // Si el video fue visto completamente, marcar el nodo como completado
+      // Marcar el nodo como completado
       const updatedNodes = [...nodes];
       const nodeIndex = 1; // Índice del segundo nodo (0-based)
       
@@ -131,18 +139,17 @@ export default function HomeScreen() {
         completed: true
       };
       
-      // Desbloquear el siguiente nodo (quiz)
-      if (nodeIndex < nodes.length - 1) {
-        updatedNodes[nodeIndex + 1] = {
-          ...updatedNodes[nodeIndex + 1],
-          locked: false
-        };
-      }
+      // Desbloquear el siguiente nodo
+      updatedNodes[nodeIndex + 1] = {
+        ...updatedNodes[nodeIndex + 1],
+        locked: false
+      };
       
       setNodes(updatedNodes);
       
-      // Mostrar mensaje de felicitación
-      Alert.alert(t('congratulations'), `${t('completedLevel')} ${nodes[nodeIndex].title}`);
+      // Mostrar modal de felicitación
+      setCompletedContentTitle(t('videoTitle'));
+      setShowVideoCompletionModal(true);
     }
   };
   
@@ -151,7 +158,7 @@ export default function HomeScreen() {
     setShowAdvancedVideo(false);
     
     if (videoCompleted) {
-      // Si el video fue visto completamente, marcar el nodo como completado
+      // Marcar el nodo como completado
       const updatedNodes = [...nodes];
       const nodeIndex = 3; // Índice del cuarto nodo (0-based)
       
@@ -160,18 +167,17 @@ export default function HomeScreen() {
         completed: true
       };
       
-      // Desbloquear el siguiente nodo (desafío final)
-      if (nodeIndex < nodes.length - 1) {
-        updatedNodes[nodeIndex + 1] = {
-          ...updatedNodes[nodeIndex + 1],
-          locked: false
-        };
-      }
+      // Desbloquear el siguiente nodo
+      updatedNodes[nodeIndex + 1] = {
+        ...updatedNodes[nodeIndex + 1],
+        locked: false
+      };
       
       setNodes(updatedNodes);
       
-      // Mostrar mensaje de felicitación
-      Alert.alert(t('congratulations'), `${t('completedLevel')} ${nodes[nodeIndex].title}`);
+      // Mostrar modal de felicitación
+      setCompletedContentTitle(t('advancedVideoTitle'));
+      setShowAdvancedVideoCompletionModal(true);
     }
   };
 
@@ -180,7 +186,7 @@ export default function HomeScreen() {
     setShowQuiz(false);
     
     if (success) {
-      // Si el quiz fue completado con éxito, marcar el nodo como completado
+      // Marcar el nodo como completado
       const updatedNodes = [...nodes];
       const nodeIndex = 2; // Índice del tercer nodo (0-based)
       
@@ -189,18 +195,17 @@ export default function HomeScreen() {
         completed: true
       };
       
-      // Desbloquear el siguiente nodo si existe
-      if (nodeIndex < nodes.length - 1) {
-        updatedNodes[nodeIndex + 1] = {
-          ...updatedNodes[nodeIndex + 1],
-          locked: false
-        };
-      }
+      // Desbloquear el siguiente nodo
+      updatedNodes[nodeIndex + 1] = {
+        ...updatedNodes[nodeIndex + 1],
+        locked: false
+      };
       
       setNodes(updatedNodes);
       
-      // Mostrar mensaje de felicitación
-      Alert.alert(t('congratulations'), `${t('completedLevel')} ${nodes[nodeIndex].title}`);
+      // Mostrar modal de felicitación
+      setCompletedContentTitle(t('quiz_title'));
+      setShowQuizCompletionModal(true);
     }
   };
   
@@ -209,7 +214,7 @@ export default function HomeScreen() {
     setShowAdvancedQuiz(false);
     
     if (success) {
-      // Si el quiz fue completado con éxito, marcar el nodo como completado
+      // Marcar el nodo como completado
       const updatedNodes = [...nodes];
       const nodeIndex = 4; // Índice del quinto nodo (0-based)
       
@@ -218,12 +223,32 @@ export default function HomeScreen() {
         completed: true
       };
       
-      // Mostrar mensaje de felicitación
-      Alert.alert(t('congratulations'), `${t('completedLevel')} ${nodes[nodeIndex].title}`);
-      
-      // Mostrar la animación del trofeo ya que es el último nodo
-      setShowTrophy(true);
+      // Mostrar modal de felicitación
+      setCompletedContentTitle(t('advanced_quiz_title'));
+      setShowAdvancedQuizCompletionModal(true);
     }
+  };
+
+  // Función para manejar el cierre del modal de felicitación del video
+  const handleVideoCompletionModalClose = () => {
+    setShowVideoCompletionModal(false);
+  };
+  
+  // Función para manejar el cierre del modal de felicitación del quiz
+  const handleQuizCompletionModalClose = () => {
+    setShowQuizCompletionModal(false);
+  };
+  
+  // Función para manejar el cierre del modal de felicitación del video avanzado
+  const handleAdvancedVideoCompletionModalClose = () => {
+    setShowAdvancedVideoCompletionModal(false);
+  };
+  
+  // Función para manejar el cierre del modal de felicitación del quiz avanzado
+  const handleAdvancedQuizCompletionModalClose = () => {
+    setShowAdvancedQuizCompletionModal(false);
+    // Mostrar la animación del trofeo ya que es el último nodo
+    setShowTrophy(true);
   };
 
   // Función para reiniciar el nodo anterior (video) cuando hay demasiados intentos fallidos en el quiz básico
@@ -322,6 +347,35 @@ export default function HomeScreen() {
         onClose={handleAdvancedQuizClose}
         onResetPreviousNode={handleResetAdvancedVideo}
         quizType="advanced"
+      />
+      
+      {/* Modales de confirmación */}
+      <CompletionModal
+        visible={showVideoCompletionModal}
+        onClose={handleVideoCompletionModalClose}
+        type="video"
+        title={completedContentTitle}
+      />
+      
+      <CompletionModal
+        visible={showQuizCompletionModal}
+        onClose={handleQuizCompletionModalClose}
+        type="quiz"
+        title={completedContentTitle}
+      />
+      
+      <CompletionModal
+        visible={showAdvancedVideoCompletionModal}
+        onClose={handleAdvancedVideoCompletionModalClose}
+        type="video"
+        title={completedContentTitle}
+      />
+      
+      <CompletionModal
+        visible={showAdvancedQuizCompletionModal}
+        onClose={handleAdvancedQuizCompletionModalClose}
+        type="quiz"
+        title={completedContentTitle}
       />
     </SafeAreaView>
   );

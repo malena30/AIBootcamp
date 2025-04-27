@@ -7,12 +7,12 @@ import {
   Text, 
   Dimensions,
   SafeAreaView,
-  Alert,
   ActivityIndicator
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { WebView } from 'react-native-webview';
 import { useLanguage } from '../context/LanguageContext';
+import CompletionModal from './CompletionModal';
 
 interface YouTubePlayerProps {
   visible: boolean;
@@ -30,6 +30,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [videoCompleted, setVideoCompleted] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
   const webViewRef = useRef<WebView>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   
@@ -77,7 +78,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
 
   // Función para manejar el cierre del modal con el botón Continuar
   const handleContinueButtonClick = () => {
-    // Solo se puede presionar cuando el video está completado
+    // Cerrar el modal del video primero
     onClose(true);
   };
   
@@ -85,6 +86,12 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   const handleCloseButtonClick = () => {
     // Cerrar sin marcar como completado
     onClose(false);
+  };
+  
+  // Función para manejar el cierre del modal de completado
+  const handleCompletionModalClose = () => {
+    setShowCompletionModal(false);
+    onClose(true);
   };
 
   return (
@@ -150,6 +157,8 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
           </View>
         </View>
       </SafeAreaView>
+      
+      {/* Ya no mostramos el modal de confirmación aquí */}
     </Modal>
   );
 };
@@ -168,9 +177,14 @@ const styles = StyleSheet.create({
     top: 15,
     right: 15,
     zIndex: 10,
-    padding: 8,
+    padding: 10,
     backgroundColor: '#f0f0f0',
-    borderRadius: 20,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
   },
   modalContent: {
     width: width * 0.92,
@@ -224,9 +238,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#3498db',
     paddingVertical: 12,
     paddingHorizontal: 30,
-    borderRadius: 25,
+    borderRadius: 30,
     width: '100%',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   disabledButton: {
     backgroundColor: '#b3d9f2',
