@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { useLanguage } from '../context/LanguageContext';
+import { MaterialIcons } from '@expo/vector-icons';
+import NodeTooltip from './NodeTooltip';
 
 // Definición de tipos para TypeScript
 interface NodeItem {
@@ -21,6 +23,11 @@ const SimpleNodePath: React.FC<SimpleNodePathProps> = ({ nodes, onNodePress }) =
   
   // Estado local para los nodos (para manejar animaciones en el futuro)
   const [localNodes, setLocalNodes] = useState(nodes);
+  
+  // Estado para el tooltip
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [selectedNode, setSelectedNode] = useState<NodeItem | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   
   // Actualizar los nodos locales cuando cambian los props
   useEffect(() => {
@@ -50,7 +57,14 @@ const SimpleNodePath: React.FC<SimpleNodePathProps> = ({ nodes, onNodePress }) =
                   node.completed ? styles.completedNode : null,
                   node.locked ? styles.lockedNode : null
                 ]}
-                onPress={() => !node.locked && onNodePress(node.id)}
+                onPress={(event) => {
+                  if (!node.locked) {
+                    // Centrar el tooltip en la pantalla
+                    setTooltipPosition({ x: 0, y: Dimensions.get('window').height / 3 });
+                    setSelectedNode(node);
+                    setTooltipVisible(true);
+                  }
+                }}
                 disabled={node.locked}
               >
                 {node.completed && (
@@ -60,21 +74,39 @@ const SimpleNodePath: React.FC<SimpleNodePathProps> = ({ nodes, onNodePress }) =
                 )}
                 {node.locked && (
                   <View style={styles.lock}>
-                    <Text style={styles.lockText}>🔒</Text>
+                    <MaterialIcons name="lock" size={28} color="white" />
+                  </View>
+                )}
+                {!node.locked && !node.completed && (
+                  <View style={styles.nodeIcon}>
+                    {(node.id === '2' || node.id === '4') && (
+                      <MaterialIcons name="videocam" size={28} color="white" />
+                    )}
+                    {(node.id === '3' || node.id === '5') && (
+                      <MaterialIcons name="lightbulb" size={28} color="white" />
+                    )}
                   </View>
                 )}
               </TouchableOpacity>
-              <Text style={[
-                styles.nodeTitle,
-                node.locked ? styles.lockedText : null,
-                nodePosition === 'left' ? styles.nodeTitleLeft : styles.nodeTitleRight
-              ]}>
-                {node.title}
-              </Text>
+
             </View>
           );
         })}
       </View>
+
+      {/* Tooltip para mostrar el título y botón de inicio */}
+      <NodeTooltip
+        visible={tooltipVisible}
+        title={selectedNode?.title || ''}
+        onStart={() => {
+          setTooltipVisible(false);
+          if (selectedNode) {
+            onNodePress(selectedNode.id);
+          }
+        }}
+        onClose={() => setTooltipVisible(false)}
+        position={tooltipPosition}
+      />
     </ScrollView>
   );
 };
@@ -136,19 +168,11 @@ const styles = StyleSheet.create({
   lockText: {
     fontSize: 24,
   },
-  nodeTitle: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    maxWidth: 150,
+  nodeIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  nodeTitleLeft: {
-    textAlign: 'left',
-  },
-  nodeTitleRight: {
-    textAlign: 'right',
-  },
+
   lockedText: {
     color: '#757575',
   }

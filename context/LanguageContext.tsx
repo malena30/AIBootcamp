@@ -31,7 +31,7 @@ const translations: Translations = {
     
     // Nodos
     'introduction': 'Tutorial',
-    'basicConcepts': 'Let\'s build GPT: from scratch, in code, spelled out.',
+    'basicConcepts': 'Let\'s build GPT: from scratch.',
     'intermediateLevel': 'Quiz: Construyendo un LLM',
     'advancedLevel': 'Deep Dive into LLMs like ChatGPT',
     'finalChallenge': 'Quiz Avanzado: Dominando LLMs',
@@ -68,10 +68,11 @@ const translations: Translations = {
     'previous': 'Anterior',
     'finish': 'Finalizar',
     'skip': 'Omitir',
+    'start': 'Comenzar',
     
     // Video
     'watchVideo': 'Ver Video',
-    'videoTitle': 'Let\'s build GPT: from scratch, in code, spelled out.',
+    'videoTitle': 'Let\'s build GPT: from scratch.',
     'watchVideoDescription': 'Este nodo contiene un video educativo sobre cómo construir GPT desde cero. Haz clic en el botón "Ver Video" para ver el video.',
     'advancedVideoTitle': 'Deep Dive into LLMs like ChatGPT',
     'advancedVideoDescription': 'Este nodo contiene un video avanzado sobre modelos de lenguaje grandes como ChatGPT. Haz clic en el botón "Ver Video" para ver el video.',
@@ -170,7 +171,7 @@ const translations: Translations = {
     
     // Nodes
     'introduction': 'Tutorial',
-    'basicConcepts': 'Let\'s build GPT: from scratch, in code, spelled out.',
+    'basicConcepts': 'Let\'s build GPT: from scratch.',
     'intermediateLevel': 'Quiz: Building an LLM',
     'advancedLevel': 'Deep Dive into LLMs like ChatGPT',
     'finalChallenge': 'Advanced Quiz: Mastering LLMs',
@@ -207,10 +208,11 @@ const translations: Translations = {
     'previous': 'Previous',
     'finish': 'Finish',
     'skip': 'Skip',
+    'start': 'Start',
     
     // Video
     'watchVideo': 'Watch Video',
-    'videoTitle': 'Let\'s build GPT: from scratch, in code, spelled out.',
+    'videoTitle': 'Let\'s build GPT: from scratch.',
     'watchVideoDescription': 'This node contains an educational video about building GPT from scratch. Click the "Watch Video" button to watch the video.',
     'advancedVideoTitle': 'Deep Dive into LLMs like ChatGPT',
     'advancedVideoDescription': 'This node contains an advanced video about large language models like ChatGPT. Click the "Watch Video" button to watch the video.',

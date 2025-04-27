@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { Modal, View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useLanguage } from '@/context/LanguageContext';
 import LottieView from 'lottie-react-native';
 
@@ -241,13 +242,19 @@ const QuizModal: React.FC<QuizModalProps> = ({
 
   return (
     <Modal
-      visible={visible}
-      animationType="slide"
       transparent={true}
+      visible={visible}
+      animationType="fade"
       onRequestClose={handleClose}
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
+          <TouchableOpacity 
+            style={styles.closeIconButton} 
+            onPress={handleClose}
+          >
+            <MaterialIcons name="close" size={24} color="#666" />
+          </TouchableOpacity>
           {!quizCompleted && !tooManyErrors ? (
             <>
               <Text style={styles.title}>{quizTitle}</Text>
@@ -257,7 +264,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
                   .replace('{total}', questions.length.toString())}
               </Text>
               
-              <ScrollView style={styles.questionContainer}>
+              <View style={styles.questionContainer}>
                 <Text style={styles.question}>{currentQuestion.question}</Text>
                 
                 {currentQuestion.options.map((option, index) => (
@@ -281,18 +288,12 @@ const QuizModal: React.FC<QuizModalProps> = ({
                     </Text>
                   </TouchableOpacity>
                 ))}
-              </ScrollView>
+              </View>
               
               {showResult && (
                 <View style={styles.resultContainer}>
                   {isCorrect ? (
                     <>
-                      <LottieView
-                        source={require('@/assets/animations/success.json')}
-                        autoPlay
-                        loop={false}
-                        style={styles.animation}
-                      />
                       <Text style={styles.correctText}>{t('quiz_completed_title')}</Text>
                       <TouchableOpacity
                         style={styles.nextButton}
@@ -303,12 +304,6 @@ const QuizModal: React.FC<QuizModalProps> = ({
                     </>
                   ) : (
                     <>
-                      <LottieView
-                        source={require('@/assets/animations/error.json')}
-                        autoPlay
-                        loop={false}
-                        style={styles.animation}
-                      />
                       <Text style={styles.incorrectText}>{t('quiz_incorrect_title')}</Text>
                       <Text style={styles.incorrectSubText}>{t('quiz_incorrect_message')}</Text>
                       <TouchableOpacity
@@ -337,38 +332,31 @@ const QuizModal: React.FC<QuizModalProps> = ({
             </>
           ) : quizCompleted ? (
             <View style={styles.completedContainer}>
-              <LottieView
-                source={{ uri: 'https://lottie.host/8cad7ef9-5599-43d6-87e8-5a0aaa78c6a5/OhBQaceZuO.lottie' }}
-                autoPlay
-                loop={true}
-                style={styles.trophyAnimation}
-              />
               <Text style={styles.completedTitle}>{t('quiz_completed_title')}</Text>
               <Text style={styles.completedText}>{t('quiz_completed_message')}</Text>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={handleClose}
+                onPress={() => onClose(true)}
               >
                 <Text style={styles.closeButtonText}>{t('continue')}</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={styles.errorContainer}>
-              <LottieView
-                source={require('@/assets/animations/error.json')}
-                autoPlay
-                loop={true}
-                style={styles.errorAnimation}
-              />
-              <Text style={styles.errorTitle}>{t('quiz_too_many_errors_title')}</Text>
-              <Text style={styles.errorText}>{t('quiz_too_many_errors_message')}</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={handleClose}
-              >
-                <Text style={styles.closeButtonText}>{t('continue')}</Text>
-              </TouchableOpacity>
-            </View>
+            tooManyErrors && (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorTitle}>{t('quiz_too_many_errors_title')}</Text>
+                <Text style={styles.errorText}>{t('quiz_too_many_errors_message')}</Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => {
+                    onResetPreviousNode();
+                    onClose(false);
+                  }}
+                >
+                  <Text style={styles.closeButtonText}>{t('continue')}</Text>
+                </TouchableOpacity>
+              </View>
+            )
           )}
         </View>
       </View>
@@ -385,20 +373,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
+  closeIconButton: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    zIndex: 10,
+    padding: 8,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 20,
+  },
   modalContent: {
-    width: width * 0.9,
-    maxHeight: height * 0.8,
+    width: width * 0.92,
+    maxHeight: height * 0.85,
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 20,
+    padding: 25,
+    paddingTop: 25,
     alignItems: 'center',
+    position: 'relative',
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginTop: 10,
     textAlign: 'center',
     color: '#3498db',
+    width: '80%',
   },
   questionCounter: {
     fontSize: 16,
@@ -407,7 +408,6 @@ const styles = StyleSheet.create({
   },
   questionContainer: {
     width: '100%',
-    maxHeight: height * 0.4,
   },
   question: {
     fontSize: 18,

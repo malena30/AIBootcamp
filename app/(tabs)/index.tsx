@@ -268,20 +268,20 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('learningPath')}</Text>
-        <Text style={styles.subtitle}>{t('completeNodes')}</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>{t('learningPath')}</Text>
+          <Text style={styles.subtitle}>{t('completeNodes')}</Text>
+        </View>
         <View style={styles.languageSwitchContainer}>
           <LanguageSwitch style={styles.languageSwitch} />
         </View>
-      </View>
-      
-      <View style={styles.content}>
-        <SimpleNodePath 
-          nodes={nodes}
-          onNodePress={handleNodePress}
-        />
-      </View>
+        
+        <View style={styles.content}>
+          <SimpleNodePath 
+            nodes={nodes}
+            onNodePress={handleNodePress}
+          />
+        </View>
       
       <TrophyAnimation 
         visible={showTrophy} 
@@ -327,7 +327,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#3498db', // Color azul sólido
   },
   header: {
     backgroundColor: '#3498db',
@@ -335,6 +335,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     alignItems: 'center',
     position: 'relative',
+    width: '100%',
   },
   content: {
     flex: 1,
@@ -352,11 +353,10 @@ const styles = StyleSheet.create({
   },
   languageSwitchContainer: {
     position: 'absolute',
-    top: 15,
-    right: 15,
+    top: 115,
+    right: 5,
     zIndex: 100,
   },
   languageSwitch: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useLanguage } from '../context/LanguageContext';
 
 interface LanguageSwitchProps {
@@ -16,14 +16,18 @@ const LanguageSwitch: React.FC<LanguageSwitchProps> = ({ style }) => {
   
   return (
     <View style={[styles.container, style]}>
-      <Text style={styles.label}>{t('language')}: {language === 'es' ? t('spanish') : t('english')}</Text>
-      <Switch
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={language === 'en' ? '#f5dd4b' : '#f4f3f4'}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleLanguage}
-        value={language === 'en'}
-      />
+      <TouchableOpacity 
+        style={styles.toggleContainer} 
+        onPress={toggleLanguage}
+        activeOpacity={0.7}
+      >
+        <View style={[styles.option, language === 'es' ? styles.activeOption : styles.inactiveOption]}>
+          <Text style={[styles.optionText, language === 'es' ? styles.activeText : styles.inactiveText]}>ES</Text>
+        </View>
+        <View style={[styles.option, language === 'en' ? styles.activeOption : styles.inactiveOption]}>
+          <Text style={[styles.optionText, language === 'en' ? styles.activeText : styles.inactiveText]}>EN</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -33,15 +37,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 8,
+    padding: 4,
     margin: 10,
   },
-  label: {
-    marginRight: 10,
-    fontSize: 14,
+  toggleContainer: {
+    flexDirection: 'row',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#333',
+    overflow: 'hidden',
+  },
+  option: {
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    minWidth: 40,
+    alignItems: 'center',
+  },
+  activeOption: {
+    backgroundColor: '#333',
+  },
+  inactiveOption: {
+    backgroundColor: '#fff',
+  },
+  optionText: {
+    fontSize: 12,
     fontWeight: '500',
+  },
+  activeText: {
+    color: '#fff',
+  },
+  inactiveText: {
+    color: '#333',
   },
 });
 

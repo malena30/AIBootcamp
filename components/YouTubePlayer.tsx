@@ -7,8 +7,10 @@ import {
   Text, 
   Dimensions,
   SafeAreaView,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { WebView } from 'react-native-webview';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -26,93 +28,40 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   title 
 }) => {
   const { t } = useLanguage();
+  const [loading, setLoading] = useState(true);
   const [videoCompleted, setVideoCompleted] = useState(false);
   const webViewRef = useRef<WebView>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Reset video completed state when modal is opened
+  // Reset states when modal is opened/closed
   useEffect(() => {
     if (visible) {
+      setLoading(true);
       setVideoCompleted(false);
-    }
-  }, [visible]);
-  
-  // Para pruebas: simular que el video termina después de 10 segundos
-  useEffect(() => {
-    if (visible) {
-      const timer = setTimeout(() => {
-        console.log("Video completado (simulado)");
-        setVideoCompleted(true);
-      }, 10000);
       
-      return () => clearTimeout(timer);
+      // Activar el botón después de 20 segundos (tiempo suficiente para ver parte importante del video)
+      timerRef.current = setTimeout(() => {
+        console.log("Activando botón de continuar después de 20 segundos");
+        setVideoCompleted(true);
+      }, 20000);
     }
+    
+    // Limpiar el temporizador cuando se cierra el modal
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
   }, [visible]);
   
+  // Reiniciar el estado cuando se abre el modal
   // Crear la URL del video de YouTube para embeber con parámetros adicionales
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1&showinfo=0&enablejsapi=1`;
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1&showinfo=0&enablejsapi=1&controls=1&origin=${encodeURIComponent('https://youtube.com')}`;
   
-  // Script para detectar cuando el video termina
+  // Script simple para notificar cuando se carga el WebView
   const injectedJavaScript = `
     window.ReactNativeWebView.postMessage('loaded');
-    
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    var player;
-    var playerReady = false;
-    
-    function checkYouTubeIframeAPIReady() {
-      if (typeof YT !== 'undefined' && YT && YT.Player) {
-        onYouTubeIframeAPIReady();
-      } else {
-        setTimeout(checkYouTubeIframeAPIReady, 100);
-      }
-    }
-    
-    checkYouTubeIframeAPIReady();
-
-    function onYouTubeIframeAPIReady() {
-      if (playerReady) return;
-      playerReady = true;
-      
-      var iframes = document.getElementsByTagName('iframe');
-      if (iframes.length > 0) {
-        var iframe = iframes[0];
-        iframe.id = 'player';
-        
-        player = new YT.Player('player', {
-          events: {
-            'onStateChange': function(event) {
-              if (event.data === YT.PlayerState.ENDED) {
-                window.ReactNativeWebView.postMessage('videoEnded');
-              }
-            }
-          }
-        });
-        
-        window.ReactNativeWebView.postMessage('playerInitialized');
-      } else {
-        window.ReactNativeWebView.postMessage('noIframeFound');
-      }
-    }
-    
-    // Verificación periódica del estado del video
-    setInterval(function() {
-      if (player && player.getCurrentTime && player.getDuration) {
-        var currentTime = player.getCurrentTime();
-        var duration = player.getDuration();
-        
-        // Si el video está casi terminado (95% o más), considerarlo como completado
-        if (duration > 0 && currentTime / duration >= 0.95) {
-          window.ReactNativeWebView.postMessage('videoAlmostEnded');
-        }
-        
-        window.ReactNativeWebView.postMessage('videoProgress:' + Math.floor(currentTime) + '/' + Math.floor(duration));
-      }
-    }, 5000);
-
     true;
   `;
 
@@ -121,17 +70,21 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
     const { data } = event.nativeEvent;
     console.log("WebView message:", data);
     
-    if (data === 'videoEnded' || data === 'videoAlmostEnded') {
-      console.log("Video completado según WebView");
-      setVideoCompleted(true);
+    if (data === 'loaded') {
+      setLoading(false);
     }
   };
 
-  // Función para manejar el cierre del modal
-  const handleClose = () => {
-    onClose(true); // Siempre consideramos el video como completado para evitar problemas
-    // Reiniciar el estado para la próxima vez que se abra
-    setVideoCompleted(false);
+  // Función para manejar el cierre del modal con el botón Continuar
+  const handleContinueButtonClick = () => {
+    // Solo se puede presionar cuando el video está completado
+    onClose(true);
+  };
+  
+  // Función para manejar el cierre del modal con el botón X
+  const handleCloseButtonClick = () => {
+    // Cerrar sin marcar como completado
+    onClose(false);
   };
 
   return (
@@ -139,13 +92,28 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
       transparent={true}
       visible={visible}
       animationType="fade"
-      onRequestClose={handleClose}
+      onRequestClose={handleCloseButtonClick}
     >
       <SafeAreaView style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          {title && <Text style={styles.title}>{title}</Text>}
+          <TouchableOpacity 
+            style={styles.closeIconButton} 
+            onPress={handleCloseButtonClick}
+          >
+            <MaterialIcons name="close" size={24} color="#666" />
+          </TouchableOpacity>
+          
+          {title && <Text style={styles.title}>
+            {title.replace(', in code, spelled out', '')}
+          </Text>}
           
           <View style={styles.videoContainer}>
+            {loading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#3498db" />
+                <Text style={styles.loadingText}>Cargando video...</Text>
+              </View>
+            )}
             <WebView
               ref={webViewRef}
               source={{ uri: embedUrl }}
@@ -172,7 +140,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
                 styles.closeButton,
                 !videoCompleted && styles.disabledButton
               ]} 
-              onPress={handleClose}
+              onPress={handleContinueButtonClick}
               disabled={!videoCompleted}
             >
               <Text style={styles.closeButtonText}>
@@ -195,12 +163,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
+  closeIconButton: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    zIndex: 10,
+    padding: 8,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 20,
+  },
   modalContent: {
-    width: width * 0.9,
+    width: width * 0.92,
     backgroundColor: 'white',
     borderRadius: 15,
-    padding: 20,
+    padding: 25,
+    paddingTop: 25,
     alignItems: 'center',
+    position: 'relative',
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -213,7 +192,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 15,
+    marginTop: 10,
     textAlign: 'center',
+    width: '80%',
   },
   videoContainer: {
     width: '100%',
@@ -254,6 +235,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    zIndex: 10,
+  },
+  loadingText: {
+    color: 'white',
+    marginTop: 10,
   },
 });
 
